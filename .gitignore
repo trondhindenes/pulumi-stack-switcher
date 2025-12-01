@@ -1,0 +1,24 @@
+# Binaries
+bin/
+pulumi-stack-switcher
+pulumi-stack-switcher.exe
+*.exe
+*.tar.gz
+*.zip
+
+# Test artifacts
+coverage.out
+coverage.html
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test Pulumi files (keep real ones)
+# Pulumi.*.yaml
