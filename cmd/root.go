@@ -4,12 +4,16 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/trond/pulumi-stack-switcher/internal/stacks"
 )
 
-var version = "dev"
+var (
+	version    = "dev"
+	showActive bool
+)
 
 // SetVersion sets the version string for the CLI
 func SetVersion(v string) {
@@ -28,10 +32,15 @@ files in the current directory and provides shell completion for quick switching
 Examples:
   pulumi-stack-switcher dev        # Switch to the 'dev' stack
   pulumi-stack-switcher production # Switch to the 'production' stack
-  pulumi-stack-switcher            # List available stacks`,
+  pulumi-stack-switcher            # List available stacks
+  pulumi-stack-switcher --active   # List stacks and show which is active`,
 	Args:              cobra.MaximumNArgs(1),
 	ValidArgsFunction: completeStacks,
 	RunE:              run,
+}
+
+func init() {
+	rootCmd.Flags().BoolVarP(&showActive, "active", "a", false, "Show which stack is currently active (slower, calls pulumi CLI)")
 }
 
 func Execute() {
@@ -52,9 +61,17 @@ func run(cmd *cobra.Command, args []string) error {
 
 	// If no stack specified, list available stacks
 	if len(args) == 0 {
+		var currentStack string
+		if showActive {
+			currentStack = getCurrentStack()
+		}
 		fmt.Println("Available stacks:")
 		for _, s := range availableStacks {
-			fmt.Printf("  %s\n", s)
+			if showActive && s == currentStack {
+				fmt.Printf("  %s (active)\n", s)
+			} else {
+				fmt.Printf("  %s\n", s)
+			}
 		}
 		return nil
 	}
@@ -86,6 +103,16 @@ func run(cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("Switched to stack '%s'\n", stackName)
 	return nil
+}
+
+// getCurrentStack returns the currently selected Pulumi stack, or empty string if none
+func getCurrentStack() string {
+	cmd := exec.Command("pulumi", "stack", "--show-name")
+	output, err := cmd.Output()
+	if err != nil {
+		return ""
+	}
+	return strings.TrimSpace(string(output))
 }
 
 // completeStacks provides shell completion for stack names

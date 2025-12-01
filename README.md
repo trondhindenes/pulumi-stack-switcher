@@ -5,7 +5,7 @@ A lightweight CLI tool that makes it easy to switch between Pulumi stacks with s
 ## Features
 
 - Automatically detects available stacks by scanning for `Pulumi.<stack-name>.yaml` files
-- Shell autocompletion for quick stack switching
+- Shell autocompletion for quick stack switching (tab-completion)
 - Cross-platform support (Linux, macOS, Windows, FreeBSD)
 
 ## Installation
