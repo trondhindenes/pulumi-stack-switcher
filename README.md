@@ -37,6 +37,8 @@ pulumi-stack-switcher
 # Switch to a specific stack
 pulumi-stack-switcher dev
 pulumi-stack-switcher production
+pulumi-stack-switcher pr<tab> --> lets you switch to a stack matching "pr"
+pulumi-stack-switcher <tab> --> lets you switch to any stack
 ```
 
 ## Shell Completion Setup
